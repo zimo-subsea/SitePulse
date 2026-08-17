@@ -2,10 +2,12 @@
 import {
   AlertTriangle,
   BellRing,
+  ChevronDown,
   Crosshair,
   Filter,
   MapPin,
   Search,
+  Settings2,
   Signal,
   SlidersHorizontal,
   Wifi,
@@ -16,12 +18,12 @@ import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL;
 const devices = [
-  { id: 'climate-east', name: 'Klima 3. etasje øst', type: 'Klima', status: 'alarm', summary: '78 % RH', location: 'Tårn A, 3. etasje øst', coordinate: [59.96588, 10.77091], primary: '78 %', primaryLabel: 'Luftfuktighet', secondary: '22,8 C', secondaryLabel: 'Temperatur', activity: 'RH over 75 % i 3 t 14 min', lastSeen: 'Sist sett nå' },
-  { id: 'hoist', name: 'Byggheis 01', type: 'Utstyr', status: 'normal', summary: '3 t 42 min aktiv', location: 'Tårn A, fasade nord', coordinate: [59.96545, 10.77229], primary: '3 t 42', primaryLabel: 'Aktiv tid i dag', secondary: '46 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå' },
-  { id: 'pump', name: 'Pumpe 02', type: 'Utstyr', status: 'alarm', summary: 'Ingen aktivitet 6 t', location: 'Kjeller, sone C', coordinate: [59.96492, 10.77082], primary: '0 min', primaryLabel: 'Aktiv tid siste 6 t', secondary: '06:22', secondaryLabel: 'Siste aktivitet', activity: 'Ingen registrert aktivitet i 6 timer', lastSeen: 'Sist sett 2 min siden' },
-  { id: 'concrete', name: 'Betongstøp A12', type: 'Betong', status: 'normal', summary: '19,6 C', location: 'Tårn B, dekke 2. etasje', coordinate: [59.96510, 10.77164], primary: '19,6 C', primaryLabel: 'Temperatur', secondary: '17,8 C', secondaryLabel: 'Minimum', activity: 'Innenfor definert temperaturvindu', lastSeen: 'Sist sett nå' },
-  { id: 'container', name: 'Materialcontainer Nord', type: 'Eiendel', status: 'warning', summary: 'Flyttet 14:22', location: 'Riggområde nord', coordinate: [59.96605, 10.77247], primary: '14:22', primaryLabel: 'Siste bevegelse', secondary: '91 %', secondaryLabel: 'Batteri', activity: 'Uventet bevegelse registrert', lastSeen: 'Sist sett nå' },
-  { id: 'drying', name: 'Tørkerom B1', type: 'Klima', status: 'normal', summary: '22,4 C / 45 % RH', location: 'Tårn B, 1. etasje', coordinate: [59.96568, 10.77180], primary: '45 %', primaryLabel: 'Luftfuktighet', secondary: '22,4 C', secondaryLabel: 'Temperatur', activity: 'Normalt tørkeforløp', lastSeen: 'Sist sett nå' },
+  { id: 'climate-east', name: 'Klima bygg B', type: 'Klima', status: 'alarm', summary: '78 % RH', location: 'Odden, bygg B', coordinate: [58.91971, 5.73496], primary: '78 %', primaryLabel: 'Luftfuktighet', secondary: '22,8 C', secondaryLabel: 'Temperatur', activity: 'RH over 75 % i 3 t 14 min', lastSeen: 'Sist sett nå' },
+  { id: 'hoist', name: 'Byggheis 01', type: 'Utstyr', status: 'normal', summary: '3 t 42 min aktiv', location: 'Odden, bygg A', coordinate: [58.91949, 5.73618], primary: '3 t 42', primaryLabel: 'Aktiv tid i dag', secondary: '46 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå' },
+  { id: 'pump', name: 'Pumpe 02', type: 'Utstyr', status: 'alarm', summary: 'Ingen aktivitet 6 t', location: 'Odden, riggområde', coordinate: [58.91894, 5.73505], primary: '0 min', primaryLabel: 'Aktiv tid siste 6 t', secondary: '06:22', secondaryLabel: 'Siste aktivitet', activity: 'Ingen registrert aktivitet i 6 timer', lastSeen: 'Sist sett 2 min siden' },
+  { id: 'concrete', name: 'Betongstøp A12', type: 'Betong', status: 'normal', summary: '19,6 C', location: 'Odden, dekke bygg A', coordinate: [58.91927, 5.73556], primary: '19,6 C', primaryLabel: 'Temperatur', secondary: '17,8 C', secondaryLabel: 'Minimum', activity: 'Innenfor definert temperaturvindu', lastSeen: 'Sist sett nå', estimate: 'Estimert ferdig i morgen kl. 10:30' },
+  { id: 'container', name: 'Materialcontainer nord', type: 'Eiendel', status: 'warning', summary: 'Flyttet 14:22', location: 'Odden, riggområde nord', coordinate: [58.91983, 5.73634], primary: '14:22', primaryLabel: 'Siste bevegelse', secondary: '91 %', secondaryLabel: 'Batteri', activity: 'Uventet bevegelse registrert', lastSeen: 'Sist sett nå' },
+  { id: 'drying', name: 'Tørkerom B1', type: 'Klima', status: 'normal', summary: '22,4 C / 45 % RH', location: 'Odden, bygg B', coordinate: [58.91958, 5.73571], primary: '45 %', primaryLabel: 'Luftfuktighet', secondary: '22,4 C', secondaryLabel: 'Temperatur', activity: 'Normalt tørkeforløp', lastSeen: 'Sist sett nå' },
 ];
 const alarms = devices.filter((device) => device.status !== 'normal');
 ---
@@ -31,8 +33,8 @@ const alarms = devices.filter((device) => device.status !== 'normal');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="SitePulse - prosjektoversikt for Frysjaparken" />
-    <title>SitePulse | Veidekke Frysjaparken</title>
+    <meta name="description" content="SitePulse - prosjektoversikt for Odden" />
+    <title>SitePulse | Veidekke Odden</title>
   </head>
   <body>
     <main class="app-shell">
@@ -40,9 +42,9 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         <div class="veidekke-lockup">
           <img src={`${base}images/veidekke.svg`} alt="Veidekke" />
           <span class="vertical-rule"></span>
-          <div><strong>SitePulse</strong><span>Frysjaparken</span></div>
+          <div><strong>SitePulse</strong><span>Odden · Jåttåvågen</span></div>
         </div>
-        <div class="site-status"><span><i></i> 6 av 6 enheter online</span><span class="status-separator"></span><span>Oslo</span></div>
+        <div class="project-switcher-wrap"><button class="project-switcher" data-project-toggle><span data-project-name>Odden</span><ChevronDown size={15} /></button><div class="project-menu" data-project-menu hidden><button data-project="Odden" data-coordinate="58.919312,5.735589">Odden <small>Jåttåvågen</small></button><button data-project="Frysjaparken" data-coordinate="59.965378,10.771529">Frysjaparken <small>Oslo</small></button></div></div>
         <div class="operator-lockup">
           <span class="operator-name">Rune Holm</span>
           <span class="avatar">RH</span>
@@ -54,8 +56,8 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         <aside class="device-sidebar">
           <div class="project-heading">
             <p class="eyebrow">Veidekke prosjekt</p>
-            <h1>Frysjaparken</h1>
-            <p><MapPin size={14} /> Frysjaveien, Oslo</p>
+            <h1 data-sidebar-project>Odden</h1>
+            <p><MapPin size={14} /> <span data-sidebar-location>Jåttåflaten 40, Stavanger</span></p>
           </div>
 
           <div class="sidebar-controls">
@@ -63,15 +65,9 @@ const alarms = devices.filter((device) => device.status !== 'normal');
               <Search size={16} />
               <input type="search" placeholder="Søk etter sensor" aria-label="Søk etter sensor" data-device-search />
             </label>
-            <button class="icon-button" aria-label="Vis typefilter" title="Vis typefilter" data-filter-toggle><Filter size={17} /></button>
-          </div>
-
-          <div class="type-filters" data-type-filters hidden>
-            <button data-type-filter="all" class="selected">Alle typer</button>
-            <button data-type-filter="Klima">Klima</button>
-            <button data-type-filter="Utstyr">Utstyr</button>
-            <button data-type-filter="Betong">Betong</button>
-            <button data-type-filter="Eiendel">Eiendel</button>
+            <div class="filter-menu"><button class="icon-button" aria-label="Vis typefilter" title="Vis typefilter" data-filter-toggle><Filter size={17} /></button><div class="type-filters" data-type-filters hidden>
+              <button data-type-filter="all" class="selected">Alle typer</button><button data-type-filter="Klima">Klima</button><button data-type-filter="Utstyr">Utstyr</button><button data-type-filter="Betong">Betong</button><button data-type-filter="Eiendel">Eiendel</button>
+            </div></div>
           </div>
 
           <div class="quick-filters" aria-label="Statusfilter">
@@ -94,10 +90,10 @@ const alarms = devices.filter((device) => device.status !== 'normal');
           <div class="sidebar-footnote"><Wifi size={15} /><span>LTE-M · data oppdateres hvert 5. minutt</span></div>
         </aside>
 
-        <section class="map-area" aria-label="Interaktivt prosjektkart for Frysjaparken">
+        <section class="map-area" aria-label="Interaktivt prosjektkart for Odden">
           <div id="sitepulse-map" data-devices={JSON.stringify(devices)}></div>
           <div class="map-topline">
-            <div class="map-context"><MapPin size={16} /><span>Frysjaparken · prosjektområde</span></div>
+            <div class="map-context"><MapPin size={16} /><span data-map-project>Odden · Jåttåvågen</span></div>
             <button class="map-action" aria-label="Sentrer kart på prosjektet" title="Sentrer kart på prosjektet" data-map-home><Crosshair size={17} /></button>
           </div>
 
@@ -122,6 +118,15 @@ const alarms = devices.filter((device) => device.status !== 'normal');
 
           <div class="map-credit">Kartdata © OpenStreetMap-bidragsytere</div>
         </section>
+
+        <aside class="settings-panel" data-settings-panel hidden>
+          <div class="settings-heading"><div><p class="eyebrow">SitePulse-innstillinger</p><h2 data-settings-name>Klima bygg B</h2><p data-settings-location>Odden, bygg B</p></div><button class="icon-button" aria-label="Lukk innstillinger" data-settings-close><X size={18} /></button></div>
+          <label>Sensorprofil<select data-profile-select><option>Utstyr</option><option>Klima</option><option>Betong</option><option>Vann</option><option>Eiendel</option><option>Egendefinert</option></select></label>
+          <label>Varsling<select data-notification-select><option>SMS</option><option>Push-varsling</option><option>E-post</option><option>Ingen</option></select></label>
+          <div class="settings-section"><h3>Godkjent måleområde</h3><div class="range-fields"><label>Nedre grense<input type="number" value="18" data-range-min /></label><label>Øvre grense<input type="number" value="75" data-range-max /></label></div><small data-range-copy>Alarm ved relativ luftfuktighet over 75 % i 30 minutter.</small></div>
+          <div class="concrete-estimate" data-concrete-estimate hidden><h3>Betongstøp</h3><strong data-concrete-copy>Estimert ferdig i morgen kl. 10:30</strong><small>Basert på registrert temperaturhistorikk.</small></div>
+          <button class="save-settings" data-settings-save>Lagre innstillinger</button>
+        </aside>
       </section>
     </main>
 
@@ -130,7 +135,7 @@ const alarms = devices.filter((device) => device.status !== 'normal');
 
       const mapElement = document.querySelector('#sitepulse-map');
       const devices = JSON.parse(mapElement.dataset.devices);
-      const projectCenter = [59.9653782, 10.7715293];
+      let projectCenter = [58.919312, 5.7355892];
       const map = L.map(mapElement, { zoomControl: false, attributionControl: false, scrollWheelZoom: true }).setView(projectCenter, 17);
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true }).addTo(map);
@@ -147,7 +152,7 @@ const alarms = devices.filter((device) => device.status !== 'normal');
       const popupMarkup = (device) => `<article class="sensor-popup">
         <div class="sensor-popup-heading"><div><span class="popup-type">${escapeHtml(device.type)}</span><h2>${escapeHtml(device.name)}</h2><p>${escapeHtml(device.location)}</p></div><span class="popup-status ${device.status}"></span></div>
         <div class="popup-metrics"><div><strong>${escapeHtml(device.primary)}</strong><span>${escapeHtml(device.primaryLabel)}</span></div><div><strong>${escapeHtml(device.secondary)}</strong><span>${escapeHtml(device.secondaryLabel)}</span></div></div>
-        <p class="popup-activity ${device.status}">${escapeHtml(device.activity)}</p><small>${escapeHtml(device.lastSeen)}</small>
+        <p class="popup-activity ${device.status}">${escapeHtml(device.activity)}</p><small>${escapeHtml(device.lastSeen)}</small><button class="popup-settings" data-popup-settings="${device.id}">Innstillinger</button>
       </article>`;
       const updateSelected = (id) => document.querySelectorAll('[data-device-id]').forEach((row) => row.classList.toggle('selected', row.dataset.deviceId === id));
       const selectDevice = (id, openPopup = true) => {
@@ -169,6 +174,25 @@ const alarms = devices.filter((device) => device.status !== 'normal');
 
       document.querySelectorAll('[data-device-id]').forEach((row) => row.addEventListener('click', () => selectDevice(row.dataset.deviceId)));
       document.querySelector('[data-map-home]').addEventListener('click', () => map.flyTo(projectCenter, 17, { duration: 0.65 }));
+
+      const settingsPanel = document.querySelector('[data-settings-panel]');
+      let configuredDevice = devices[0];
+      const openSettings = (id) => {
+        const device = devices.find((item) => item.id === id);
+        if (!device) return;
+        configuredDevice = device;
+        document.querySelector('[data-settings-name]').textContent = device.name;
+        document.querySelector('[data-settings-location]').textContent = device.location;
+        document.querySelector('[data-profile-select]').value = device.type;
+        document.querySelector('[data-concrete-estimate]').hidden = device.type !== 'Betong';
+        document.querySelector('[data-concrete-copy]').textContent = device.estimate || 'Estimat beregnes når målinger foreligger.';
+        settingsPanel.hidden = false;
+        map.invalidateSize();
+      };
+      map.on('popupopen', (event) => event.popup.getElement().querySelector('[data-popup-settings]').addEventListener('click', () => openSettings(event.popup.getElement().querySelector('[data-popup-settings]').dataset.popupSettings)));
+      document.querySelector('[data-settings-close]').addEventListener('click', () => { settingsPanel.hidden = true; map.invalidateSize(); });
+      document.querySelector('[data-settings-save]').addEventListener('click', () => { configuredDevice.type = document.querySelector('[data-profile-select]').value; settingsPanel.hidden = true; map.invalidateSize(); });
+      document.querySelector('[data-profile-select]').addEventListener('change', (event) => { document.querySelector('[data-concrete-estimate]').hidden = event.target.value !== 'Betong'; });
 
       const filterToggle = document.querySelector('[data-filter-toggle]');
       const typeFilters = document.querySelector('[data-type-filters]');
@@ -194,6 +218,20 @@ const alarms = devices.filter((device) => device.status !== 'normal');
       document.querySelector('[data-alarm-toggle]').addEventListener('click', () => { alarmStack.hidden = !alarmStack.hidden; });
       document.querySelector('[data-alarm-close]').addEventListener('click', () => { alarmStack.hidden = true; });
       document.querySelectorAll('[data-alarm-device]').forEach((alarm) => alarm.addEventListener('click', () => { alarmStack.hidden = true; selectDevice(alarm.dataset.alarmDevice); }));
+
+      const projectMenu = document.querySelector('[data-project-menu]');
+      document.querySelector('[data-project-toggle]').addEventListener('click', () => { projectMenu.hidden = !projectMenu.hidden; });
+      document.querySelectorAll('[data-project]').forEach((project) => project.addEventListener('click', () => {
+        const [lat, lng] = project.dataset.coordinate.split(',').map(Number);
+        projectCenter = [lat, lng];
+        const isOdden = project.dataset.project === 'Odden';
+        document.querySelector('[data-project-name]').textContent = project.dataset.project;
+        document.querySelector('[data-sidebar-project]').textContent = project.dataset.project;
+        document.querySelector('[data-sidebar-location]').textContent = isOdden ? 'Jåttåflaten 40, Stavanger' : 'Frysjaveien, Oslo';
+        document.querySelector('[data-map-project]').textContent = isOdden ? 'Odden · Jåttåvågen' : 'Frysjaparken · Oslo';
+        projectMenu.hidden = true;
+        map.flyTo(projectCenter, 17, { duration: 0.65 });
+      }));
     </script>
   </body>
 </html>
