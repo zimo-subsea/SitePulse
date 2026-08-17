@@ -22,6 +22,8 @@ import {
 } from '@lucide/astro';
 import '../styles/global.css';
 
+const base = import.meta.env.BASE_URL;
+
 const devices = [
   {
     id: 'climate-east',
@@ -147,7 +149,7 @@ const devices = [
       <header class="topbar">
         <div class="topbar-brand">
           <button class="icon-button mobile-menu" aria-label="Apne meny"><Menu size={20} /></button>
-          <img src="/images/zimo.svg" alt="Zimo" class="zimo-logo" />
+          <img src={`${base}images/zimo.svg`} alt="Zimo" class="zimo-logo" />
           <span class="brand-divider"></span>
           <span class="product-name">SitePulse</span>
         </div>
@@ -184,7 +186,7 @@ const devices = [
               <h1>Frysjaparken</h1>
               <p class="project-subtitle">Oslo · Bygg A og B</p>
             </div>
-            <img src="/images/veidekke.svg" alt="Veidekke" class="veidekke-logo" />
+            <img src={`${base}images/veidekke.svg`} alt="Veidekke" class="veidekke-logo" />
           </div>
 
           <div class="sidebar-tools">
@@ -229,7 +231,7 @@ const devices = [
           </div>
 
           <div class="core-card">
-            <div class="core-image-wrap"><img src="/images/sitepulse-puck-concept.png" alt="SitePulse Core sensorkonsept" /></div>
+            <div class="core-image-wrap"><img src={`${base}images/sitepulse-puck-concept.png`} alt="SitePulse Core sensorkonsept" /></div>
             <div class="core-copy">
               <span>SitePulse Core</span>
               <small>6 av 6 enheter online</small>
