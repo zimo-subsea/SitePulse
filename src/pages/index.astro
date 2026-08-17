@@ -1,405 +1,199 @@
 ---
 import {
-  Activity,
   AlertTriangle,
-  BatteryMedium,
-  Bell,
-  Building2,
-  ChevronDown,
-  CircleHelp,
-  Clock3,
-  CloudSun,
+  BellRing,
+  Crosshair,
+  Filter,
   MapPin,
-  Menu,
-  MoreHorizontal,
   Search,
-  Settings2,
   Signal,
   SlidersHorizontal,
-  ThermometerSun,
-  Waves,
+  Wifi,
   X,
 } from '@lucide/astro';
+import 'leaflet/dist/leaflet.css';
 import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL;
-
 const devices = [
-  {
-    id: 'climate-east',
-    name: 'Klima 3. etasje øst',
-    type: 'Klima',
-    status: 'Alarm',
-    summary: '78 % RH',
-    location: 'Tårn A, 3. etasje øst',
-    metricOne: '22,8',
-    metricOneLabel: 'Temperatur C',
-    metricTwo: '78',
-    metricTwoLabel: 'Luftfuktighet %',
-    metricThree: '0,2',
-    metricThreeLabel: 'Luftstrøm m/s',
-    activity: 'RH over 75 % i 3 t 14 min',
-    lastSeen: 'Sist sett na',
-    icon: 'climate',
-    marker: 'marker-climate',
-  },
-  {
-    id: 'hoist',
-    name: 'Byggheis 01',
-    type: 'Utstyr',
-    status: 'Normal',
-    summary: '3 t 42 min aktiv',
-    location: 'Tårn A, fasade nord',
-    metricOne: '3 t 42',
-    metricOneLabel: 'Aktiv tid i dag',
-    metricTwo: '46',
-    metricTwoLabel: 'Utnyttelse %',
-    metricThree: '12:18',
-    metricThreeLabel: 'Siste aktivitet',
-    activity: 'Normal drift de siste 24 timene',
-    lastSeen: 'Sist sett na',
-    icon: 'equipment',
-    marker: 'marker-hoist',
-  },
-  {
-    id: 'pump',
-    name: 'Pumpe 02',
-    type: 'Utstyr',
-    status: 'Alarm',
-    summary: 'Ingen aktivitet 6 t',
-    location: 'Kjeller, sone C',
-    metricOne: '0 min',
-    metricOneLabel: 'Aktiv tid siste 6 t',
-    metricTwo: '18',
-    metricTwoLabel: 'Utnyttelse % i dag',
-    metricThree: '06:22',
-    metricThreeLabel: 'Siste aktivitet',
-    activity: 'Ingen registrert aktivitet i 6 timer',
-    lastSeen: 'Sist sett 2 min siden',
-    icon: 'equipment',
-    marker: 'marker-pump',
-  },
-  {
-    id: 'concrete',
-    name: 'Betongstøp A12',
-    type: 'Betong',
-    status: 'Normal',
-    summary: '19,6 C',
-    location: 'Tårn B, dekke 2. etasje',
-    metricOne: '19,6',
-    metricOneLabel: 'Temperatur C',
-    metricTwo: '17,8',
-    metricTwoLabel: 'Minimum C',
-    metricThree: '21,1',
-    metricThreeLabel: 'Maksimum C',
-    activity: 'Innenfor definert temperaturvindu',
-    lastSeen: 'Sist sett na',
-    icon: 'concrete',
-    marker: 'marker-concrete',
-  },
-  {
-    id: 'container',
-    name: 'Materialcontainer Nord',
-    type: 'Eiendel',
-    status: 'Varsel',
-    summary: 'Flyttet 14:22',
-    location: 'Riggområde nord',
-    metricOne: '14:22',
-    metricOneLabel: 'Siste bevegelse',
-    metricTwo: '91',
-    metricTwoLabel: 'Batteri %',
-    metricThree: 'God',
-    metricThreeLabel: 'GPS-signal',
-    activity: 'Uventet bevegelse registrert',
-    lastSeen: 'Sist sett na',
-    icon: 'asset',
-    marker: 'marker-container',
-  },
-  {
-    id: 'drying',
-    name: 'Tørkerom B1',
-    type: 'Klima',
-    status: 'Normal',
-    summary: '22,4 C / 45 % RH',
-    location: 'Tårn B, 1. etasje',
-    metricOne: '22,4',
-    metricOneLabel: 'Temperatur C',
-    metricTwo: '45',
-    metricTwoLabel: 'Luftfuktighet %',
-    metricThree: '0,5',
-    metricThreeLabel: 'Luftstrøm m/s',
-    activity: 'Normalt tørkeforløp',
-    lastSeen: 'Sist sett na',
-    icon: 'climate',
-    marker: 'marker-drying',
-  },
+  { id: 'climate-east', name: 'Klima 3. etasje øst', type: 'Klima', status: 'alarm', summary: '78 % RH', location: 'Tårn A, 3. etasje øst', coordinate: [59.96588, 10.77091], primary: '78 %', primaryLabel: 'Luftfuktighet', secondary: '22,8 C', secondaryLabel: 'Temperatur', activity: 'RH over 75 % i 3 t 14 min', lastSeen: 'Sist sett nå' },
+  { id: 'hoist', name: 'Byggheis 01', type: 'Utstyr', status: 'normal', summary: '3 t 42 min aktiv', location: 'Tårn A, fasade nord', coordinate: [59.96545, 10.77229], primary: '3 t 42', primaryLabel: 'Aktiv tid i dag', secondary: '46 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå' },
+  { id: 'pump', name: 'Pumpe 02', type: 'Utstyr', status: 'alarm', summary: 'Ingen aktivitet 6 t', location: 'Kjeller, sone C', coordinate: [59.96492, 10.77082], primary: '0 min', primaryLabel: 'Aktiv tid siste 6 t', secondary: '06:22', secondaryLabel: 'Siste aktivitet', activity: 'Ingen registrert aktivitet i 6 timer', lastSeen: 'Sist sett 2 min siden' },
+  { id: 'concrete', name: 'Betongstøp A12', type: 'Betong', status: 'normal', summary: '19,6 C', location: 'Tårn B, dekke 2. etasje', coordinate: [59.96510, 10.77164], primary: '19,6 C', primaryLabel: 'Temperatur', secondary: '17,8 C', secondaryLabel: 'Minimum', activity: 'Innenfor definert temperaturvindu', lastSeen: 'Sist sett nå' },
+  { id: 'container', name: 'Materialcontainer Nord', type: 'Eiendel', status: 'warning', summary: 'Flyttet 14:22', location: 'Riggområde nord', coordinate: [59.96605, 10.77247], primary: '14:22', primaryLabel: 'Siste bevegelse', secondary: '91 %', secondaryLabel: 'Batteri', activity: 'Uventet bevegelse registrert', lastSeen: 'Sist sett nå' },
+  { id: 'drying', name: 'Tørkerom B1', type: 'Klima', status: 'normal', summary: '22,4 C / 45 % RH', location: 'Tårn B, 1. etasje', coordinate: [59.96568, 10.77180], primary: '45 %', primaryLabel: 'Luftfuktighet', secondary: '22,4 C', secondaryLabel: 'Temperatur', activity: 'Normalt tørkeforløp', lastSeen: 'Sist sett nå' },
 ];
+const alarms = devices.filter((device) => device.status !== 'normal');
 ---
 
 <html lang="no">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#17191c" />
-    <meta name="description" content="SitePulse - prosjektoversikt for byggeplassen" />
-    <title>SitePulse | Frysjaparken</title>
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="SitePulse - prosjektoversikt for Frysjaparken" />
+    <title>SitePulse | Veidekke Frysjaparken</title>
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar">
-        <div class="topbar-brand">
-          <button class="icon-button mobile-menu" aria-label="Apne meny"><Menu size={20} /></button>
-          <img src={`${base}images/zimo.svg`} alt="Zimo" class="zimo-logo" />
-          <span class="brand-divider"></span>
-          <span class="product-name">SitePulse</span>
+        <div class="veidekke-lockup">
+          <img src={`${base}images/veidekke.svg`} alt="Veidekke" />
+          <span class="vertical-rule"></span>
+          <div><strong>SitePulse</strong><span>Frysjaparken</span></div>
         </div>
-
-        <nav class="main-nav" aria-label="Hovedmeny">
-          <a href="#overview" class="active">Oversikt</a>
-          <a href="#history">Malinger</a>
-          <a href="#alarms">Alarmer <span class="nav-count">3</span></a>
-        </nav>
-
-        <div class="topbar-actions">
-          <button class="project-switcher" aria-label="Bytt prosjekt">
-            <Building2 size={16} />
-            <span>Frysjaparken</span>
-            <ChevronDown size={15} />
-          </button>
-          <button class="icon-button notification-button" aria-label="3 aktive alarmer" data-alarm-toggle>
-            <Bell size={19} />
-            <span class="notification-dot">3</span>
-          </button>
-          <button class="user-button" aria-label="Brukermeny for Rune Holm">
-            <span class="avatar">RH</span>
-            <span class="user-name">Rune Holm</span>
-            <ChevronDown size={15} />
-          </button>
+        <div class="site-status"><span><i></i> 6 av 6 enheter online</span><span class="status-separator"></span><span>Oslo</span></div>
+        <div class="operator-lockup">
+          <span class="operator-name">Rune Holm</span>
+          <span class="avatar">RH</span>
+          <span class="zimo-lockup"><img src={`${base}images/zimo.svg`} alt="Zimo" /><small>Teknologi</small></span>
         </div>
       </header>
 
-      <section class="workspace" id="overview">
+      <section class="workspace">
         <aside class="device-sidebar">
-          <div class="project-context">
-            <div>
-              <p class="eyebrow">Prosjekt</p>
-              <h1>Frysjaparken</h1>
-              <p class="project-subtitle">Oslo · Bygg A og B</p>
-            </div>
-            <img src={`${base}images/veidekke.svg`} alt="Veidekke" class="veidekke-logo" />
+          <div class="project-heading">
+            <p class="eyebrow">Veidekke prosjekt</p>
+            <h1>Frysjaparken</h1>
+            <p><MapPin size={14} /> Frysjaveien, Oslo</p>
           </div>
 
-          <div class="sidebar-tools">
+          <div class="sidebar-controls">
             <label class="search-field">
               <Search size={16} />
-              <input type="search" placeholder="Søk etter SitePulse" aria-label="Søk etter SitePulse" data-device-search />
+              <input type="search" placeholder="Søk etter sensor" aria-label="Søk etter sensor" data-device-search />
             </label>
-            <button class="filter-button" aria-label="Filtrer enheter"><SlidersHorizontal size={17} /></button>
+            <button class="icon-button" aria-label="Vis typefilter" title="Vis typefilter" data-filter-toggle><Filter size={17} /></button>
           </div>
 
-          <div class="filter-row" aria-label="Hurtigfilter">
-            <button class="filter-chip selected" data-filter="all">Alle <span>6</span></button>
-            <button class="filter-chip" data-filter="alarm">Alarm <span>2</span></button>
-            <button class="filter-chip" data-filter="warning">Varsel <span>1</span></button>
+          <div class="type-filters" data-type-filters hidden>
+            <button data-type-filter="all" class="selected">Alle typer</button>
+            <button data-type-filter="Klima">Klima</button>
+            <button data-type-filter="Utstyr">Utstyr</button>
+            <button data-type-filter="Betong">Betong</button>
+            <button data-type-filter="Eiendel">Eiendel</button>
           </div>
 
-          <div class="list-heading">
-            <span>SitePulse-enheter</span>
-            <button aria-label="Enhetsinnstillinger"><Settings2 size={16} /></button>
+          <div class="quick-filters" aria-label="Statusfilter">
+            <button data-status-filter="all" class="selected">Alle <span>6</span></button>
+            <button data-status-filter="alarm">Alarm <span>2</span></button>
+            <button data-status-filter="warning">Varsel <span>1</span></button>
           </div>
 
+          <div class="list-heading"><span>SitePulse-enheter</span><span class="device-count" data-device-count>6</span></div>
           <div class="device-list" data-device-list>
-            {devices.map((device, index) => (
-              <button
-                class:list={['device-row', { selected: index === 0 }]}
-                data-device-id={device.id}
-                data-status={device.status.toLowerCase()}
-              >
-                <span class:list={['device-icon', device.icon]}>
-                  {device.icon === 'climate' && <CloudSun size={17} />}
-                  {device.icon === 'equipment' && <Activity size={17} />}
-                  {device.icon === 'concrete' && <ThermometerSun size={17} />}
-                  {device.icon === 'asset' && <MapPin size={17} />}
-                </span>
-                <span class="device-copy">
-                  <span class="device-name">{device.name}</span>
-                  <span class="device-meta">{device.type} · {device.summary}</span>
-                </span>
-                <span class:list={['status-dot', device.status.toLowerCase()]} aria-label={device.status}></span>
-              </button>
-            ))}
-          </div>
-
-          <div class="core-card">
-            <div class="core-image-wrap"><img src={`${base}images/sitepulse-puck-concept.png`} alt="SitePulse Core sensorkonsept" /></div>
-            <div class="core-copy">
-              <span>SitePulse Core</span>
-              <small>6 av 6 enheter online</small>
-            </div>
-            <Signal size={16} />
-          </div>
-        </aside>
-
-        <section class="map-area" aria-label="Prosjektkart for Frysjaparken">
-          <div class="map-toolbar">
-            <div class="map-label"><MapPin size={16} /> <span>Frysjaparken, Oslo</span></div>
-            <div class="map-controls">
-              <button aria-label="Vis kartlag"><Waves size={16} /></button>
-              <button aria-label="Forstorr kart">+</button>
-              <button aria-label="Forminsk kart">-</button>
-            </div>
-          </div>
-
-          <div class="map-surface">
-            <div class="map-street street-one"></div>
-            <div class="map-street street-two"></div>
-            <div class="map-street street-three"></div>
-            <div class="map-water"></div>
-            <div class="map-label-text label-north">RING 3</div>
-            <div class="map-label-text label-site">Frysjaparken</div>
-            <div class="map-building building-a"><span>TARN A</span></div>
-            <div class="map-building building-b"><span>TARN B</span></div>
-            <div class="map-building building-c"><span>RIGG</span></div>
-            <div class="site-boundary"></div>
             {devices.map((device) => (
-              <button
-                class:list={['map-marker', device.marker, device.status.toLowerCase()]}
-                data-marker-id={device.id}
-                aria-label={`Velg ${device.name}`}
-              >
-                <span></span>
+              <button class:list={['device-row', { selected: device.id === 'climate-east' }]} data-device-id={device.id} data-device-type={device.type} data-device-status={device.status}>
+                <span class:list={['device-symbol', device.status]}><Signal size={15} /></span>
+                <span class="device-copy"><strong>{device.name}</strong><small>{device.type} · {device.summary}</small></span>
+                <span class:list={['status-dot', device.status]} aria-label={device.status}></span>
               </button>
             ))}
-            <div class="north-indicator">N</div>
           </div>
 
-          <div class="map-legend">
-            <span><i class="normal"></i> Normal</span>
-            <span><i class="varsel"></i> Varsel</span>
-            <span><i class="alarm"></i> Alarm</span>
-          </div>
-
-          <div class="alarm-popover" data-alarm-popover id="alarms">
-            <div class="alarm-popover-title"><span><AlertTriangle size={16} /> Aktive alarmer</span><button aria-label="Lukk alarmer" data-alarm-close><X size={16} /></button></div>
-            <button class="alarm-item" data-alarm-device="climate-east"><span class="status-dot alarm"></span><span><strong>Klima 3. etasje ost</strong><small>RH over 75 % i 3 t 14 min</small></span><ChevronDown size={15} /></button>
-            <button class="alarm-item" data-alarm-device="pump"><span class="status-dot alarm"></span><span><strong>Pumpe 02</strong><small>Ingen aktivitet siste 6 timer</small></span><ChevronDown size={15} /></button>
-            <button class="alarm-item" data-alarm-device="container"><span class="status-dot varsel"></span><span><strong>Materialcontainer Nord</strong><small>Uventet bevegelse 14:22</small></span><ChevronDown size={15} /></button>
-          </div>
-        </section>
-
-        <aside class="detail-panel" data-detail-panel>
-          <div class="detail-head">
-            <div>
-              <p class="eyebrow" data-detail-type>Klima</p>
-              <h2 data-detail-name>Klima 3. etasje øst</h2>
-              <p class="detail-location"><MapPin size={14} /><span data-detail-location>Tårn A, 3. etasje øst</span></p>
-            </div>
-            <button class="icon-button" aria-label="Flere valg"><MoreHorizontal size={20} /></button>
-          </div>
-
-          <div class="current-state">
-            <span class="state-label" data-detail-status><i class="alarm"></i> Alarm</span>
-            <span class="last-seen" data-detail-lastseen>Sist sett na</span>
-          </div>
-
-          <div class="metric-grid">
-            <div><strong data-metric-one>22,8</strong><span data-metric-one-label>Temperatur C</span></div>
-            <div><strong data-metric-two>78</strong><span data-metric-two-label>Luftfuktighet %</span></div>
-            <div><strong data-metric-three>0,2</strong><span data-metric-three-label>Luftstrom m/s</span></div>
-          </div>
-
-          <div class="attention-card" data-attention-card>
-            <AlertTriangle size={17} />
-            <div><strong>Oppmerksomhet kreves</strong><span data-detail-activity>RH over 75 % i 3 t 14 min</span></div>
-            <button aria-label="Lukk varsel"><X size={15} /></button>
-          </div>
-
-          <section class="history-section" id="history">
-            <div class="section-heading"><div><h3>Målinger siste 24 timer</h3><p>Temperatur og luftfuktighet</p></div><button>24 t <ChevronDown size={14} /></button></div>
-            <div class="chart-card">
-              <div class="chart-labels"><span>80%</span><span>60%</span><span>40%</span></div>
-              <div class="chart-grid-lines"><i></i><i></i><i></i></div>
-              <div class="chart-bars" aria-label="Historikkgraf">
-                <span style="--value: 44%"></span><span style="--value: 50%"></span><span style="--value: 47%"></span><span style="--value: 56%"></span><span style="--value: 63%"></span><span style="--value: 68%"></span><span style="--value: 76%"></span><span style="--value: 81%"></span><span style="--value: 78%"></span><span style="--value: 73%"></span><span style="--value: 76%"></span><span style="--value: 78%"></span>
-              </div>
-              <div class="chart-times"><span>00</span><span>06</span><span>12</span><span>18</span><span>Na</span></div>
-            </div>
-          </section>
-
-          <section class="signal-section">
-            <div><BatteryMedium size={17} /><span>Batteri <strong>82 %</strong></span></div>
-            <div><Signal size={17} /><span>Mobildekning <strong>God</strong></span></div>
-          </section>
-
-          <button class="detail-action">Se full historikk <ChevronDown size={16} /></button>
+          <div class="sidebar-footnote"><Wifi size={15} /><span>LTE-M · data oppdateres hvert 5. minutt</span></div>
         </aside>
-      </section>
 
-      <footer class="app-footer"><span>SitePulse er levert av Zimo</span><span>·</span><span>Demo med simulerte maledata</span><span class="footer-help"><CircleHelp size={14} /> Trenger du hjelp?</span></footer>
+        <section class="map-area" aria-label="Interaktivt prosjektkart for Frysjaparken">
+          <div id="sitepulse-map" data-devices={JSON.stringify(devices)}></div>
+          <div class="map-topline">
+            <div class="map-context"><MapPin size={16} /><span>Frysjaparken · prosjektområde</span></div>
+            <button class="map-action" aria-label="Sentrer kart på prosjektet" title="Sentrer kart på prosjektet" data-map-home><Crosshair size={17} /></button>
+          </div>
+
+          <div class="map-summary"><span class="summary-online"><i></i> 3 normale</span><span class="summary-warning"><i></i> 1 varsel</span><span class="summary-alarm"><i></i> 2 alarmer</span></div>
+
+          <div class="alarm-control">
+            <div class="alarm-stack" data-alarm-stack hidden>
+              <div class="alarm-stack-heading"><span><AlertTriangle size={16} /> Aktive avvik</span><button aria-label="Lukk alarmoversikt" data-alarm-close><X size={16} /></button></div>
+              {alarms.map((device) => (
+                <button class="alarm-row" data-alarm-device={device.id}>
+                  <span class:list={['status-dot', device.status]}></span>
+                  <span><strong>{device.name}</strong><small>{device.activity}</small></span>
+                </button>
+              ))}
+            </div>
+            <button class="alarm-bubble has-alarms" aria-label="Vis 3 aktive alarmer" title="Vis aktive alarmer" data-alarm-toggle>
+              <BellRing size={19} />
+              <span>Alarmer</span>
+              <b>{alarms.length}</b>
+            </button>
+          </div>
+
+          <div class="map-credit">Kartdata © OpenStreetMap-bidragsytere</div>
+        </section>
+      </section>
     </main>
 
-    <script define:vars={{ devices }}>
-      const detail = {
-        name: document.querySelector('[data-detail-name]'),
-        type: document.querySelector('[data-detail-type]'),
-        location: document.querySelector('[data-detail-location]'),
-        status: document.querySelector('[data-detail-status]'),
-        lastSeen: document.querySelector('[data-detail-lastseen]'),
-        activity: document.querySelector('[data-detail-activity]'),
-        one: document.querySelector('[data-metric-one]'),
-        oneLabel: document.querySelector('[data-metric-one-label]'),
-        two: document.querySelector('[data-metric-two]'),
-        twoLabel: document.querySelector('[data-metric-two-label]'),
-        three: document.querySelector('[data-metric-three]'),
-        threeLabel: document.querySelector('[data-metric-three-label]'),
-      };
+    <script>
+      import L from 'leaflet';
 
-      const selectDevice = (id) => {
+      const mapElement = document.querySelector('#sitepulse-map');
+      const devices = JSON.parse(mapElement.dataset.devices);
+      const projectCenter = [59.9653782, 10.7715293];
+      const map = L.map(mapElement, { zoomControl: false, attributionControl: false, scrollWheelZoom: true }).setView(projectCenter, 17);
+      L.control.zoom({ position: 'bottomleft' }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true }).addTo(map);
+
+      const markers = new Map();
+      const escapeHtml = (value) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' })[character]);
+      const markerIcon = (device) => L.divIcon({
+        className: 'sitepulse-div-icon',
+        iconSize: [42, 42],
+        iconAnchor: [21, 21],
+        popupAnchor: [0, -25],
+        html: `<div class="puck-marker ${device.status}"><span>SP</span></div>`,
+      });
+      const popupMarkup = (device) => `<article class="sensor-popup">
+        <div class="sensor-popup-heading"><div><span class="popup-type">${escapeHtml(device.type)}</span><h2>${escapeHtml(device.name)}</h2><p>${escapeHtml(device.location)}</p></div><span class="popup-status ${device.status}"></span></div>
+        <div class="popup-metrics"><div><strong>${escapeHtml(device.primary)}</strong><span>${escapeHtml(device.primaryLabel)}</span></div><div><strong>${escapeHtml(device.secondary)}</strong><span>${escapeHtml(device.secondaryLabel)}</span></div></div>
+        <p class="popup-activity ${device.status}">${escapeHtml(device.activity)}</p><small>${escapeHtml(device.lastSeen)}</small>
+      </article>`;
+      const updateSelected = (id) => document.querySelectorAll('[data-device-id]').forEach((row) => row.classList.toggle('selected', row.dataset.deviceId === id));
+      const selectDevice = (id, openPopup = true) => {
         const device = devices.find((item) => item.id === id);
-        if (!device) return;
-        document.querySelectorAll('[data-device-id]').forEach((row) => row.classList.toggle('selected', row.dataset.deviceId === id));
-        document.querySelectorAll('[data-marker-id]').forEach((marker) => marker.classList.toggle('selected', marker.dataset.markerId === id));
-        detail.name.textContent = device.name;
-        detail.type.textContent = device.type;
-        detail.location.textContent = device.location;
-        detail.lastSeen.textContent = device.lastSeen;
-        detail.activity.textContent = device.activity;
-        detail.one.textContent = device.metricOne;
-        detail.oneLabel.textContent = device.metricOneLabel;
-        detail.two.textContent = device.metricTwo;
-        detail.twoLabel.textContent = device.metricTwoLabel;
-        detail.three.textContent = device.metricThree;
-        detail.threeLabel.textContent = device.metricThreeLabel;
-        detail.status.innerHTML = `<i class="${device.status.toLowerCase()}"></i> ${device.status}`;
+        const marker = markers.get(id);
+        if (!device || !marker) return;
+        updateSelected(id);
+        map.flyTo(device.coordinate, 18, { duration: 0.65 });
+        if (openPopup) window.setTimeout(() => marker.openPopup(), 350);
       };
 
-      document.querySelectorAll('[data-device-id], [data-marker-id], [data-alarm-device]').forEach((button) => {
-        button.addEventListener('click', () => {
-          selectDevice(button.dataset.deviceId || button.dataset.markerId || button.dataset.alarmDevice);
-          document.querySelector('[data-alarm-popover]').classList.remove('open');
-        });
+      devices.forEach((device) => {
+        const marker = L.marker(device.coordinate, { icon: markerIcon(device), title: device.name, keyboard: true }).addTo(map);
+        marker.bindPopup(popupMarkup(device), { closeButton: true, maxWidth: 286, minWidth: 256, className: 'sitepulse-popup' });
+        marker.on('click', () => updateSelected(device.id));
+        markers.set(device.id, marker);
       });
+      selectDevice('climate-east', false);
 
-      document.querySelector('[data-device-search]').addEventListener('input', (event) => {
-        const term = event.target.value.toLowerCase();
+      document.querySelectorAll('[data-device-id]').forEach((row) => row.addEventListener('click', () => selectDevice(row.dataset.deviceId)));
+      document.querySelector('[data-map-home]').addEventListener('click', () => map.flyTo(projectCenter, 17, { duration: 0.65 }));
+
+      const filterToggle = document.querySelector('[data-filter-toggle]');
+      const typeFilters = document.querySelector('[data-type-filters]');
+      filterToggle.addEventListener('click', () => { typeFilters.hidden = !typeFilters.hidden; filterToggle.classList.toggle('active', !typeFilters.hidden); });
+
+      let currentType = 'all';
+      let currentStatus = 'all';
+      const applyFilters = () => {
+        const query = document.querySelector('[data-device-search]').value.toLowerCase().trim();
+        let visible = 0;
         document.querySelectorAll('[data-device-id]').forEach((row) => {
-          row.hidden = !row.textContent.toLowerCase().includes(term);
+          const isVisible = (currentType === 'all' || row.dataset.deviceType === currentType) && (currentStatus === 'all' || row.dataset.deviceStatus === currentStatus) && row.textContent.toLowerCase().includes(query);
+          row.hidden = !isVisible;
+          if (isVisible) visible += 1;
         });
-      });
+        document.querySelector('[data-device-count]').textContent = visible;
+      };
+      document.querySelector('[data-device-search]').addEventListener('input', applyFilters);
+      document.querySelectorAll('[data-type-filter]').forEach((button) => button.addEventListener('click', () => { currentType = button.dataset.typeFilter; document.querySelectorAll('[data-type-filter]').forEach((item) => item.classList.toggle('selected', item === button)); applyFilters(); }));
+      document.querySelectorAll('[data-status-filter]').forEach((button) => button.addEventListener('click', () => { currentStatus = button.dataset.statusFilter; document.querySelectorAll('[data-status-filter]').forEach((item) => item.classList.toggle('selected', item === button)); applyFilters(); }));
 
-      document.querySelectorAll('[data-filter]').forEach((button) => {
-        button.addEventListener('click', () => {
-          document.querySelectorAll('[data-filter]').forEach((chip) => chip.classList.remove('selected'));
-          button.classList.add('selected');
-          const filter = button.dataset.filter;
-          document.querySelectorAll('[data-device-id]').forEach((row) => {
-            row.hidden = filter !== 'all' && row.dataset.status !== filter;
-          });
-        });
-      });
-
-      document.querySelector('[data-alarm-toggle]').addEventListener('click', () => document.querySelector('[data-alarm-popover]').classList.toggle('open'));
-      document.querySelector('[data-alarm-close]').addEventListener('click', () => document.querySelector('[data-alarm-popover]').classList.remove('open'));
+      const alarmStack = document.querySelector('[data-alarm-stack]');
+      document.querySelector('[data-alarm-toggle]').addEventListener('click', () => { alarmStack.hidden = !alarmStack.hidden; });
+      document.querySelector('[data-alarm-close]').addEventListener('click', () => { alarmStack.hidden = true; });
+      document.querySelectorAll('[data-alarm-device]').forEach((alarm) => alarm.addEventListener('click', () => { alarmStack.hidden = true; selectDevice(alarm.dataset.alarmDevice); }));
     </script>
   </body>
 </html>
