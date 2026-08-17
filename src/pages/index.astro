@@ -1,0 +1,403 @@
+---
+import {
+  Activity,
+  AlertTriangle,
+  BatteryMedium,
+  Bell,
+  Building2,
+  ChevronDown,
+  CircleHelp,
+  Clock3,
+  CloudSun,
+  MapPin,
+  Menu,
+  MoreHorizontal,
+  Search,
+  Settings2,
+  Signal,
+  SlidersHorizontal,
+  ThermometerSun,
+  Waves,
+  X,
+} from '@lucide/astro';
+import '../styles/global.css';
+
+const devices = [
+  {
+    id: 'climate-east',
+    name: 'Klima 3. etasje øst',
+    type: 'Klima',
+    status: 'Alarm',
+    summary: '78 % RH',
+    location: 'Tårn A, 3. etasje øst',
+    metricOne: '22,8',
+    metricOneLabel: 'Temperatur C',
+    metricTwo: '78',
+    metricTwoLabel: 'Luftfuktighet %',
+    metricThree: '0,2',
+    metricThreeLabel: 'Luftstrøm m/s',
+    activity: 'RH over 75 % i 3 t 14 min',
+    lastSeen: 'Sist sett na',
+    icon: 'climate',
+    marker: 'marker-climate',
+  },
+  {
+    id: 'hoist',
+    name: 'Byggheis 01',
+    type: 'Utstyr',
+    status: 'Normal',
+    summary: '3 t 42 min aktiv',
+    location: 'Tårn A, fasade nord',
+    metricOne: '3 t 42',
+    metricOneLabel: 'Aktiv tid i dag',
+    metricTwo: '46',
+    metricTwoLabel: 'Utnyttelse %',
+    metricThree: '12:18',
+    metricThreeLabel: 'Siste aktivitet',
+    activity: 'Normal drift de siste 24 timene',
+    lastSeen: 'Sist sett na',
+    icon: 'equipment',
+    marker: 'marker-hoist',
+  },
+  {
+    id: 'pump',
+    name: 'Pumpe 02',
+    type: 'Utstyr',
+    status: 'Alarm',
+    summary: 'Ingen aktivitet 6 t',
+    location: 'Kjeller, sone C',
+    metricOne: '0 min',
+    metricOneLabel: 'Aktiv tid siste 6 t',
+    metricTwo: '18',
+    metricTwoLabel: 'Utnyttelse % i dag',
+    metricThree: '06:22',
+    metricThreeLabel: 'Siste aktivitet',
+    activity: 'Ingen registrert aktivitet i 6 timer',
+    lastSeen: 'Sist sett 2 min siden',
+    icon: 'equipment',
+    marker: 'marker-pump',
+  },
+  {
+    id: 'concrete',
+    name: 'Betongstøp A12',
+    type: 'Betong',
+    status: 'Normal',
+    summary: '19,6 C',
+    location: 'Tårn B, dekke 2. etasje',
+    metricOne: '19,6',
+    metricOneLabel: 'Temperatur C',
+    metricTwo: '17,8',
+    metricTwoLabel: 'Minimum C',
+    metricThree: '21,1',
+    metricThreeLabel: 'Maksimum C',
+    activity: 'Innenfor definert temperaturvindu',
+    lastSeen: 'Sist sett na',
+    icon: 'concrete',
+    marker: 'marker-concrete',
+  },
+  {
+    id: 'container',
+    name: 'Materialcontainer Nord',
+    type: 'Eiendel',
+    status: 'Varsel',
+    summary: 'Flyttet 14:22',
+    location: 'Riggområde nord',
+    metricOne: '14:22',
+    metricOneLabel: 'Siste bevegelse',
+    metricTwo: '91',
+    metricTwoLabel: 'Batteri %',
+    metricThree: 'God',
+    metricThreeLabel: 'GPS-signal',
+    activity: 'Uventet bevegelse registrert',
+    lastSeen: 'Sist sett na',
+    icon: 'asset',
+    marker: 'marker-container',
+  },
+  {
+    id: 'drying',
+    name: 'Tørkerom B1',
+    type: 'Klima',
+    status: 'Normal',
+    summary: '22,4 C / 45 % RH',
+    location: 'Tårn B, 1. etasje',
+    metricOne: '22,4',
+    metricOneLabel: 'Temperatur C',
+    metricTwo: '45',
+    metricTwoLabel: 'Luftfuktighet %',
+    metricThree: '0,5',
+    metricThreeLabel: 'Luftstrøm m/s',
+    activity: 'Normalt tørkeforløp',
+    lastSeen: 'Sist sett na',
+    icon: 'climate',
+    marker: 'marker-drying',
+  },
+];
+---
+
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#17191c" />
+    <meta name="description" content="SitePulse - prosjektoversikt for byggeplassen" />
+    <title>SitePulse | Frysjaparken</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="topbar-brand">
+          <button class="icon-button mobile-menu" aria-label="Apne meny"><Menu size={20} /></button>
+          <img src="/images/zimo.svg" alt="Zimo" class="zimo-logo" />
+          <span class="brand-divider"></span>
+          <span class="product-name">SitePulse</span>
+        </div>
+
+        <nav class="main-nav" aria-label="Hovedmeny">
+          <a href="#overview" class="active">Oversikt</a>
+          <a href="#history">Malinger</a>
+          <a href="#alarms">Alarmer <span class="nav-count">3</span></a>
+        </nav>
+
+        <div class="topbar-actions">
+          <button class="project-switcher" aria-label="Bytt prosjekt">
+            <Building2 size={16} />
+            <span>Frysjaparken</span>
+            <ChevronDown size={15} />
+          </button>
+          <button class="icon-button notification-button" aria-label="3 aktive alarmer" data-alarm-toggle>
+            <Bell size={19} />
+            <span class="notification-dot">3</span>
+          </button>
+          <button class="user-button" aria-label="Brukermeny for Rune Holm">
+            <span class="avatar">RH</span>
+            <span class="user-name">Rune Holm</span>
+            <ChevronDown size={15} />
+          </button>
+        </div>
+      </header>
+
+      <section class="workspace" id="overview">
+        <aside class="device-sidebar">
+          <div class="project-context">
+            <div>
+              <p class="eyebrow">Prosjekt</p>
+              <h1>Frysjaparken</h1>
+              <p class="project-subtitle">Oslo · Bygg A og B</p>
+            </div>
+            <img src="/images/veidekke.svg" alt="Veidekke" class="veidekke-logo" />
+          </div>
+
+          <div class="sidebar-tools">
+            <label class="search-field">
+              <Search size={16} />
+              <input type="search" placeholder="Søk etter SitePulse" aria-label="Søk etter SitePulse" data-device-search />
+            </label>
+            <button class="filter-button" aria-label="Filtrer enheter"><SlidersHorizontal size={17} /></button>
+          </div>
+
+          <div class="filter-row" aria-label="Hurtigfilter">
+            <button class="filter-chip selected" data-filter="all">Alle <span>6</span></button>
+            <button class="filter-chip" data-filter="alarm">Alarm <span>2</span></button>
+            <button class="filter-chip" data-filter="warning">Varsel <span>1</span></button>
+          </div>
+
+          <div class="list-heading">
+            <span>SitePulse-enheter</span>
+            <button aria-label="Enhetsinnstillinger"><Settings2 size={16} /></button>
+          </div>
+
+          <div class="device-list" data-device-list>
+            {devices.map((device, index) => (
+              <button
+                class:list={['device-row', { selected: index === 0 }]}
+                data-device-id={device.id}
+                data-status={device.status.toLowerCase()}
+              >
+                <span class:list={['device-icon', device.icon]}>
+                  {device.icon === 'climate' && <CloudSun size={17} />}
+                  {device.icon === 'equipment' && <Activity size={17} />}
+                  {device.icon === 'concrete' && <ThermometerSun size={17} />}
+                  {device.icon === 'asset' && <MapPin size={17} />}
+                </span>
+                <span class="device-copy">
+                  <span class="device-name">{device.name}</span>
+                  <span class="device-meta">{device.type} · {device.summary}</span>
+                </span>
+                <span class:list={['status-dot', device.status.toLowerCase()]} aria-label={device.status}></span>
+              </button>
+            ))}
+          </div>
+
+          <div class="core-card">
+            <div class="core-image-wrap"><img src="/images/sitepulse-puck-concept.png" alt="SitePulse Core sensorkonsept" /></div>
+            <div class="core-copy">
+              <span>SitePulse Core</span>
+              <small>6 av 6 enheter online</small>
+            </div>
+            <Signal size={16} />
+          </div>
+        </aside>
+
+        <section class="map-area" aria-label="Prosjektkart for Frysjaparken">
+          <div class="map-toolbar">
+            <div class="map-label"><MapPin size={16} /> <span>Frysjaparken, Oslo</span></div>
+            <div class="map-controls">
+              <button aria-label="Vis kartlag"><Waves size={16} /></button>
+              <button aria-label="Forstorr kart">+</button>
+              <button aria-label="Forminsk kart">-</button>
+            </div>
+          </div>
+
+          <div class="map-surface">
+            <div class="map-street street-one"></div>
+            <div class="map-street street-two"></div>
+            <div class="map-street street-three"></div>
+            <div class="map-water"></div>
+            <div class="map-label-text label-north">RING 3</div>
+            <div class="map-label-text label-site">Frysjaparken</div>
+            <div class="map-building building-a"><span>TARN A</span></div>
+            <div class="map-building building-b"><span>TARN B</span></div>
+            <div class="map-building building-c"><span>RIGG</span></div>
+            <div class="site-boundary"></div>
+            {devices.map((device) => (
+              <button
+                class:list={['map-marker', device.marker, device.status.toLowerCase()]}
+                data-marker-id={device.id}
+                aria-label={`Velg ${device.name}`}
+              >
+                <span></span>
+              </button>
+            ))}
+            <div class="north-indicator">N</div>
+          </div>
+
+          <div class="map-legend">
+            <span><i class="normal"></i> Normal</span>
+            <span><i class="varsel"></i> Varsel</span>
+            <span><i class="alarm"></i> Alarm</span>
+          </div>
+
+          <div class="alarm-popover" data-alarm-popover id="alarms">
+            <div class="alarm-popover-title"><span><AlertTriangle size={16} /> Aktive alarmer</span><button aria-label="Lukk alarmer" data-alarm-close><X size={16} /></button></div>
+            <button class="alarm-item" data-alarm-device="climate-east"><span class="status-dot alarm"></span><span><strong>Klima 3. etasje ost</strong><small>RH over 75 % i 3 t 14 min</small></span><ChevronDown size={15} /></button>
+            <button class="alarm-item" data-alarm-device="pump"><span class="status-dot alarm"></span><span><strong>Pumpe 02</strong><small>Ingen aktivitet siste 6 timer</small></span><ChevronDown size={15} /></button>
+            <button class="alarm-item" data-alarm-device="container"><span class="status-dot varsel"></span><span><strong>Materialcontainer Nord</strong><small>Uventet bevegelse 14:22</small></span><ChevronDown size={15} /></button>
+          </div>
+        </section>
+
+        <aside class="detail-panel" data-detail-panel>
+          <div class="detail-head">
+            <div>
+              <p class="eyebrow" data-detail-type>Klima</p>
+              <h2 data-detail-name>Klima 3. etasje øst</h2>
+              <p class="detail-location"><MapPin size={14} /><span data-detail-location>Tårn A, 3. etasje øst</span></p>
+            </div>
+            <button class="icon-button" aria-label="Flere valg"><MoreHorizontal size={20} /></button>
+          </div>
+
+          <div class="current-state">
+            <span class="state-label" data-detail-status><i class="alarm"></i> Alarm</span>
+            <span class="last-seen" data-detail-lastseen>Sist sett na</span>
+          </div>
+
+          <div class="metric-grid">
+            <div><strong data-metric-one>22,8</strong><span data-metric-one-label>Temperatur C</span></div>
+            <div><strong data-metric-two>78</strong><span data-metric-two-label>Luftfuktighet %</span></div>
+            <div><strong data-metric-three>0,2</strong><span data-metric-three-label>Luftstrom m/s</span></div>
+          </div>
+
+          <div class="attention-card" data-attention-card>
+            <AlertTriangle size={17} />
+            <div><strong>Oppmerksomhet kreves</strong><span data-detail-activity>RH over 75 % i 3 t 14 min</span></div>
+            <button aria-label="Lukk varsel"><X size={15} /></button>
+          </div>
+
+          <section class="history-section" id="history">
+            <div class="section-heading"><div><h3>Målinger siste 24 timer</h3><p>Temperatur og luftfuktighet</p></div><button>24 t <ChevronDown size={14} /></button></div>
+            <div class="chart-card">
+              <div class="chart-labels"><span>80%</span><span>60%</span><span>40%</span></div>
+              <div class="chart-grid-lines"><i></i><i></i><i></i></div>
+              <div class="chart-bars" aria-label="Historikkgraf">
+                <span style="--value: 44%"></span><span style="--value: 50%"></span><span style="--value: 47%"></span><span style="--value: 56%"></span><span style="--value: 63%"></span><span style="--value: 68%"></span><span style="--value: 76%"></span><span style="--value: 81%"></span><span style="--value: 78%"></span><span style="--value: 73%"></span><span style="--value: 76%"></span><span style="--value: 78%"></span>
+              </div>
+              <div class="chart-times"><span>00</span><span>06</span><span>12</span><span>18</span><span>Na</span></div>
+            </div>
+          </section>
+
+          <section class="signal-section">
+            <div><BatteryMedium size={17} /><span>Batteri <strong>82 %</strong></span></div>
+            <div><Signal size={17} /><span>Mobildekning <strong>God</strong></span></div>
+          </section>
+
+          <button class="detail-action">Se full historikk <ChevronDown size={16} /></button>
+        </aside>
+      </section>
+
+      <footer class="app-footer"><span>SitePulse er levert av Zimo</span><span>·</span><span>Demo med simulerte maledata</span><span class="footer-help"><CircleHelp size={14} /> Trenger du hjelp?</span></footer>
+    </main>
+
+    <script define:vars={{ devices }}>
+      const detail = {
+        name: document.querySelector('[data-detail-name]'),
+        type: document.querySelector('[data-detail-type]'),
+        location: document.querySelector('[data-detail-location]'),
+        status: document.querySelector('[data-detail-status]'),
+        lastSeen: document.querySelector('[data-detail-lastseen]'),
+        activity: document.querySelector('[data-detail-activity]'),
+        one: document.querySelector('[data-metric-one]'),
+        oneLabel: document.querySelector('[data-metric-one-label]'),
+        two: document.querySelector('[data-metric-two]'),
+        twoLabel: document.querySelector('[data-metric-two-label]'),
+        three: document.querySelector('[data-metric-three]'),
+        threeLabel: document.querySelector('[data-metric-three-label]'),
+      };
+
+      const selectDevice = (id) => {
+        const device = devices.find((item) => item.id === id);
+        if (!device) return;
+        document.querySelectorAll('[data-device-id]').forEach((row) => row.classList.toggle('selected', row.dataset.deviceId === id));
+        document.querySelectorAll('[data-marker-id]').forEach((marker) => marker.classList.toggle('selected', marker.dataset.markerId === id));
+        detail.name.textContent = device.name;
+        detail.type.textContent = device.type;
+        detail.location.textContent = device.location;
+        detail.lastSeen.textContent = device.lastSeen;
+        detail.activity.textContent = device.activity;
+        detail.one.textContent = device.metricOne;
+        detail.oneLabel.textContent = device.metricOneLabel;
+        detail.two.textContent = device.metricTwo;
+        detail.twoLabel.textContent = device.metricTwoLabel;
+        detail.three.textContent = device.metricThree;
+        detail.threeLabel.textContent = device.metricThreeLabel;
+        detail.status.innerHTML = `<i class="${device.status.toLowerCase()}"></i> ${device.status}`;
+      };
+
+      document.querySelectorAll('[data-device-id], [data-marker-id], [data-alarm-device]').forEach((button) => {
+        button.addEventListener('click', () => {
+          selectDevice(button.dataset.deviceId || button.dataset.markerId || button.dataset.alarmDevice);
+          document.querySelector('[data-alarm-popover]').classList.remove('open');
+        });
+      });
+
+      document.querySelector('[data-device-search]').addEventListener('input', (event) => {
+        const term = event.target.value.toLowerCase();
+        document.querySelectorAll('[data-device-id]').forEach((row) => {
+          row.hidden = !row.textContent.toLowerCase().includes(term);
+        });
+      });
+
+      document.querySelectorAll('[data-filter]').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter]').forEach((chip) => chip.classList.remove('selected'));
+          button.classList.add('selected');
+          const filter = button.dataset.filter;
+          document.querySelectorAll('[data-device-id]').forEach((row) => {
+            row.hidden = filter !== 'all' && row.dataset.status !== filter;
+          });
+        });
+      });
+
+      document.querySelector('[data-alarm-toggle]').addEventListener('click', () => document.querySelector('[data-alarm-popover]').classList.toggle('open'));
+      document.querySelector('[data-alarm-close]').addEventListener('click', () => document.querySelector('[data-alarm-popover]').classList.remove('open'));
+    </script>
+  </body>
+</html>
