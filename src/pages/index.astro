@@ -4,7 +4,10 @@ import {
   BellRing,
   ChevronDown,
   Crosshair,
+  ExternalLink,
   Filter,
+  Layers3,
+  Lightbulb,
   MapPin,
   Search,
   Settings2,
@@ -20,12 +23,12 @@ import '../styles/global.css';
 const base = import.meta.env.BASE_URL;
 const assetBase = base.endsWith('/') ? base : `${base}/`;
 const devices = [
-  { id: 'climate-east', name: 'Klima bygg B', type: 'Klima', status: 'alarm', summary: '78 % RH', location: 'Odden, bygg B', coordinate: [58.91873, 5.73644], primary: '78 %', primaryLabel: 'Luftfuktighet', secondary: '22,8 C', secondaryLabel: 'Temperatur', activity: 'RH over 75 % i 3 t 14 min', lastSeen: 'Sist sett nå' },
-  { id: 'hoist', name: 'Byggheis 01', type: 'Utstyr', status: 'normal', summary: '3 t 42 min aktiv', location: 'Odden, bygg A', coordinate: [58.91892, 5.73608], primary: '3 t 42', primaryLabel: 'Aktiv tid i dag', secondary: '46 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå', usage: '3 t 42 min aktiv · 2 t 11 min tomgang' },
-  { id: 'generator', name: 'Generator 01', type: 'Utstyr', status: 'normal', summary: '1 t 28 min aktiv', location: 'Odden, riggområde', coordinate: [58.91858, 5.73572], primary: '1 t 28', primaryLabel: 'Aktiv tid i dag', secondary: '28 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå', usage: '1 t 28 min aktiv · 18 min tomgang' },
-  { id: 'concrete', name: 'Betongstøp A12', type: 'Betong', status: 'normal', summary: '19,6 C', location: 'Odden, dekke bygg A', coordinate: [58.91877, 5.73581], primary: '19,6 C', primaryLabel: 'Temperatur', secondary: '17,8 C', secondaryLabel: 'Minimum', activity: 'Innenfor definert temperaturvindu', lastSeen: 'Sist sett nå', estimate: 'Estimert ferdig i morgen kl. 10:30' },
-  { id: 'container', name: 'Materialcontainer nord', type: 'Eiendel', status: 'warning', summary: 'Flyttet 14:22', location: 'Odden, riggområde nord', coordinate: [58.91914, 5.73638], primary: '14:22', primaryLabel: 'Siste bevegelse', secondary: '91 %', secondaryLabel: 'Batteri', activity: 'Uventet bevegelse registrert', lastSeen: 'Sist sett nå' },
-  { id: 'drying', name: 'Tørkerom B1', type: 'Klima', status: 'normal', summary: '22,4 C / 45 % RH', location: 'Odden, bygg B', coordinate: [58.91866, 5.73615], primary: '45 %', primaryLabel: 'Luftfuktighet', secondary: '22,4 C', secondaryLabel: 'Temperatur', activity: 'Normalt tørkeforløp', lastSeen: 'Sist sett nå' },
+  { id: 'climate-east', name: 'Klima bygg B', type: 'Klima', status: 'alarm', summary: '78 % RH', location: 'Odden, bygg B', coordinate: [58.91862, 5.73522], primary: '78 %', primaryLabel: 'Luftfuktighet', secondary: '22,8 C', secondaryLabel: 'Temperatur', activity: 'RH over 75 % i 3 t 14 min', lastSeen: 'Sist sett nå' },
+  { id: 'hoist', name: 'Heisekran', type: 'Utstyr', status: 'normal', summary: '3 t 42 min aktiv', location: 'Odden, bygg A', coordinate: [58.91884, 5.73548], primary: '3 t 42', primaryLabel: 'Aktiv tid i dag', secondary: '46 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå', usage: '3 t 42 min aktiv · 2 t 11 min tomgang' },
+  { id: 'generator', name: 'Generator 01', type: 'Utstyr', status: 'normal', summary: '1 t 28 min aktiv', location: 'Odden, riggområde', coordinate: [58.91846, 5.73534], primary: '1 t 28', primaryLabel: 'Aktiv tid i dag', secondary: '28 %', secondaryLabel: 'Utnyttelse', activity: 'Normal drift de siste 24 timene', lastSeen: 'Sist sett nå', usage: '1 t 28 min aktiv · 18 min tomgang' },
+  { id: 'concrete', name: 'Betongstøp A12', type: 'Betong', status: 'normal', summary: '19,6 C', location: 'Odden, dekke bygg A', coordinate: [58.91872, 5.73558], primary: '19,6 C', primaryLabel: 'Temperatur', secondary: '17,8 C', secondaryLabel: 'Minimum', activity: 'Innenfor definert temperaturvindu', lastSeen: 'Sist sett nå', estimate: 'Estimert ferdig i morgen kl. 10:30' },
+  { id: 'container', name: 'Materialcontainer nord', type: 'Eiendel', status: 'warning', summary: 'Flyttet 14:22', location: 'Odden, riggområde nord', coordinate: [58.91898, 5.73516], primary: '14:22', primaryLabel: 'Siste bevegelse', secondary: '91 %', secondaryLabel: 'Batteri', activity: 'Uventet bevegelse registrert', lastSeen: 'Sist sett nå' },
+  { id: 'drying', name: 'Tørkerom B1', type: 'Klima', status: 'normal', summary: '22,4 C / 45 % RH', location: 'Odden, bygg B', coordinate: [58.91855, 5.73562], primary: '45 %', primaryLabel: 'Luftfuktighet', secondary: '22,4 C', secondaryLabel: 'Temperatur', activity: 'Normalt tørkeforløp', lastSeen: 'Sist sett nå' },
 ];
 const alarms = devices.filter((device) => device.status !== 'normal');
 ---
@@ -50,7 +53,7 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         <div class="operator-lockup">
           <span class="operator-name">Rune Holm</span>
           <span class="avatar">RH</span>
-          <span class="zimo-lockup"><img src={`${assetBase}images/zimo.svg`} alt="Zimo" /><small>Teknologi</small></span>
+          <div class="zimo-menu-wrap"><button class="zimo-lockup" aria-label="Åpne Zimo-meny" aria-expanded="false" data-zimo-toggle><img src={`${assetBase}images/zimo.svg`} alt="Zimo" /><small>Teknologi</small></button><div class="zimo-menu" data-zimo-menu hidden><a href="https://zimo.no/" target="_blank" rel="noreferrer"><ExternalLink size={15} />Gå til Zimo.no</a><button data-zimo-feedback><Lightbulb size={15} />Send inn forslag</button><button data-zimo-products><Layers3 size={15} />Se lignende produkter</button></div></div>
         </div>
       </header>
 
@@ -128,16 +131,24 @@ const alarms = devices.filter((device) => device.status !== 'normal');
           <label>Varsling<select data-notification-select><option>SMS</option><option>Push-varsling</option><option>E-post</option><option>Ingen</option></select></label>
           <div class="settings-section"><h3>Godkjent måleområde</h3><div class="range-fields"><label>Nedre grense<input type="number" value="18" data-range-min /></label><label>Øvre grense<input type="number" value="75" data-range-max /></label></div><small data-range-copy>Alarm ved relativ luftfuktighet over 75 % i 30 minutter.</small></div>
           <div class="concrete-estimate" data-concrete-estimate hidden><h3>Betongstøp</h3><strong data-concrete-copy>Estimert ferdig i morgen kl. 10:30</strong><small>Basert på registrert temperaturhistorikk.</small></div>
+          <div class="climate-target" data-climate-target hidden><h3>Ønsket temperatur</h3><label>Temperatur i rommet<input type="number" value="22" data-target-temperature /><span>°C</span></label><small>Varsel utløses når målingen ligger utenfor valgt område.</small></div>
           <div class="equipment-usage" data-equipment-usage hidden><h3>Bruk i dag</h3><strong data-equipment-copy>3 t 42 min aktiv</strong><div class="usage-bars"><i style="--bar:42%"></i><i style="--bar:74%"></i><i style="--bar:58%"></i><i style="--bar:88%"></i><i style="--bar:64%"></i><i style="--bar:31%"></i><i style="--bar:53%"></i></div><small>Aktivitet fordelt gjennom arbeidsdagen.</small></div>
           <button class="save-settings" data-settings-save>Lagre innstillinger</button>
         </aside>
       </section>
+      <dialog class="zimo-dialog" data-zimo-feedback-dialog>
+        <form method="dialog" class="dialog-content" data-feedback-form><div class="dialog-heading"><div><p class="eyebrow">Zimo</p><h2>Send inn forslag</h2></div><button class="icon-button" aria-label="Lukk forslag" value="cancel"><X size={18} /></button></div><label>Hva kan vi forbedre?<textarea placeholder="Skriv forslaget ditt her" required data-feedback-message></textarea></label><p class="dialog-confirmation" data-feedback-confirmation hidden>Takk. Forslaget er registrert og sendt til Zimo.</p><button class="save-settings" type="submit">Send forslag</button></form>
+      </dialog>
+      <dialog class="zimo-dialog" data-zimo-products-dialog>
+        <form method="dialog" class="dialog-content"><div class="dialog-heading"><div><p class="eyebrow">Zimo</p><h2>Lignende produkter</h2></div><button class="icon-button" aria-label="Lukk produktoversikt" value="cancel"><X size={18} /></button></div><div class="product-list"><a href="https://zimo.no/" target="_blank" rel="noreferrer"><strong>Prosjektovervåking</strong><span>Oversikt over eiendeler, klima og varsler på byggeplass.</span><ExternalLink size={15} /></a><a href="https://zimo.no/" target="_blank" rel="noreferrer"><strong>Tilstandsoppfølging</strong><span>Få kontroll på målinger, service og avvik i drift.</span><ExternalLink size={15} /></a><a href="https://zimo.no/" target="_blank" rel="noreferrer"><strong>Rapportering</strong><span>Del beslutningsgrunnlag med prosjekt og kunde.</span><ExternalLink size={15} /></a></div></form>
+      </dialog>
     </main>
 
     <script>
       import L from 'leaflet';
 
       const mapElement = document.querySelector('#sitepulse-map');
+      const mapArea = mapElement.closest('.map-area');
       const devices = JSON.parse(mapElement.dataset.devices);
       let projectCenter = [58.9188, 5.7360];
       const map = L.map(mapElement, { zoomControl: false, attributionControl: false, scrollWheelZoom: true }).setView(projectCenter, 17);
@@ -159,11 +170,13 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         <p class="popup-activity ${device.status}">${escapeHtml(device.activity)}</p><small>${escapeHtml(device.lastSeen)}</small><button class="popup-settings" data-popup-settings="${device.id}">Innstillinger</button>
       </article>`;
       const updateSelected = (id) => document.querySelectorAll('[data-device-id]').forEach((row) => row.classList.toggle('selected', row.dataset.deviceId === id));
+      const settingsPanel = document.querySelector('[data-settings-panel]');
       const selectDevice = (id, openPopup = true) => {
         const device = devices.find((item) => item.id === id);
         const marker = markers.get(id);
         if (!device || !marker) return;
         updateSelected(id);
+        if (!settingsPanel.hidden) openSettings(id);
         map.flyTo(device.coordinate, 18, { duration: 0.65 });
         if (openPopup) window.setTimeout(() => marker.openPopup(), 350);
       };
@@ -171,7 +184,13 @@ const alarms = devices.filter((device) => device.status !== 'normal');
       devices.forEach((device) => {
         const marker = L.marker(device.coordinate, { icon: markerIcon(device), title: device.name, keyboard: true }).addTo(map);
         marker.bindPopup(popupMarkup(device), { closeButton: true, maxWidth: 286, minWidth: 256, className: 'sitepulse-popup' });
-        marker.on('click', () => updateSelected(device.id));
+        marker.on('click', () => {
+          updateSelected(device.id);
+          if (!settingsPanel.hidden) openSettings(device.id);
+        });
+        marker.getElement().addEventListener('click', () => {
+          if (!settingsPanel.hidden) openSettings(device.id);
+        });
         markers.set(device.id, marker);
       });
       selectDevice('climate-east', false);
@@ -181,7 +200,6 @@ const alarms = devices.filter((device) => device.status !== 'normal');
       document.querySelectorAll('[data-favorite]').forEach((button) => button.addEventListener('click', () => { const id = button.dataset.favorite; favorites.has(id) ? favorites.delete(id) : favorites.add(id); button.classList.toggle('active', favorites.has(id)); button.title = favorites.has(id) ? 'Fjern fra favoritter' : 'Legg til favoritt'; const list = document.querySelector('[data-device-list]'); [...list.querySelectorAll('[data-device-id]')].sort((a, b) => Number(favorites.has(b.dataset.deviceId)) - Number(favorites.has(a.dataset.deviceId))).forEach((row) => list.append(row)); }));
       document.querySelector('[data-map-home]').addEventListener('click', () => map.flyTo(projectCenter, 17, { duration: 0.65 }));
 
-      const settingsPanel = document.querySelector('[data-settings-panel]');
       let configuredDevice = devices[0];
       const openSettings = (id) => {
         const device = devices.find((item) => item.id === id);
@@ -192,16 +210,19 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         document.querySelector('[data-device-name]').value = device.name;
         document.querySelector('[data-profile-select]').value = device.type;
         document.querySelector('[data-concrete-estimate]').hidden = device.type !== 'Betong';
+        document.querySelector('[data-climate-target]').hidden = device.type !== 'Klima';
         document.querySelector('[data-equipment-usage]').hidden = device.type !== 'Utstyr';
         document.querySelector('[data-equipment-copy]').textContent = device.usage || 'Ingen bruk registrert i dag';
         document.querySelector('[data-concrete-copy]').textContent = device.estimate || 'Estimat beregnes når målinger foreligger.';
+        document.querySelector('[data-target-temperature]').value = device.targetTemperature || 22;
         settingsPanel.hidden = false;
+        mapArea.classList.add('settings-open');
         map.invalidateSize();
       };
       map.on('popupopen', (event) => event.popup.getElement().querySelector('[data-popup-settings]').addEventListener('click', () => openSettings(event.popup.getElement().querySelector('[data-popup-settings]').dataset.popupSettings)));
-      document.querySelector('[data-settings-close]').addEventListener('click', () => { settingsPanel.hidden = true; map.invalidateSize(); });
-      document.querySelector('[data-settings-save]').addEventListener('click', () => { configuredDevice.type = document.querySelector('[data-profile-select]').value; configuredDevice.name = document.querySelector('[data-device-name]').value.trim() || configuredDevice.name; document.querySelector(`[data-device-id="${configuredDevice.id}"] .device-copy strong`).textContent = configuredDevice.name; markers.get(configuredDevice.id).setPopupContent(popupMarkup(configuredDevice)); settingsPanel.hidden = true; map.invalidateSize(); });
-      document.querySelector('[data-profile-select]').addEventListener('change', (event) => { document.querySelector('[data-concrete-estimate]').hidden = event.target.value !== 'Betong'; document.querySelector('[data-equipment-usage]').hidden = event.target.value !== 'Utstyr'; });
+      document.querySelector('[data-settings-close]').addEventListener('click', () => { settingsPanel.hidden = true; mapArea.classList.remove('settings-open'); map.invalidateSize(); });
+      document.querySelector('[data-settings-save]').addEventListener('click', () => { configuredDevice.type = document.querySelector('[data-profile-select]').value; configuredDevice.name = document.querySelector('[data-device-name]').value.trim() || configuredDevice.name; configuredDevice.targetTemperature = document.querySelector('[data-target-temperature]').value; document.querySelector(`[data-device-id="${configuredDevice.id}"] .device-copy strong`).textContent = configuredDevice.name; markers.get(configuredDevice.id).setPopupContent(popupMarkup(configuredDevice)); settingsPanel.hidden = true; mapArea.classList.remove('settings-open'); map.invalidateSize(); });
+      document.querySelector('[data-profile-select]').addEventListener('change', (event) => { document.querySelector('[data-concrete-estimate]').hidden = event.target.value !== 'Betong'; document.querySelector('[data-climate-target]').hidden = event.target.value !== 'Klima'; document.querySelector('[data-equipment-usage]').hidden = event.target.value !== 'Utstyr'; });
 
       const filterToggle = document.querySelector('[data-filter-toggle]');
       const typeFilters = document.querySelector('[data-type-filters]');
@@ -242,6 +263,15 @@ const alarms = devices.filter((device) => device.status !== 'normal');
         map.flyTo(projectCenter, 17, { duration: 0.65 });
       }));
       document.querySelector('[data-report-toggle]').addEventListener('click', () => { window.location.hash = 'rapport'; document.querySelector('[data-report-toggle]').classList.toggle('active'); });
+
+      const zimoMenu = document.querySelector('[data-zimo-menu]');
+      const zimoToggle = document.querySelector('[data-zimo-toggle]');
+      zimoToggle.addEventListener('click', (event) => { event.stopPropagation(); zimoMenu.hidden = !zimoMenu.hidden; zimoToggle.setAttribute('aria-expanded', String(!zimoMenu.hidden)); });
+      document.addEventListener('click', (event) => { if (!event.target.closest('.zimo-menu-wrap')) { zimoMenu.hidden = true; zimoToggle.setAttribute('aria-expanded', 'false'); } });
+      const feedbackDialog = document.querySelector('[data-zimo-feedback-dialog]');
+      document.querySelector('[data-zimo-feedback]').addEventListener('click', () => { zimoMenu.hidden = true; zimoToggle.setAttribute('aria-expanded', 'false'); feedbackDialog.showModal(); });
+      document.querySelector('[data-zimo-products]').addEventListener('click', () => { zimoMenu.hidden = true; zimoToggle.setAttribute('aria-expanded', 'false'); document.querySelector('[data-zimo-products-dialog]').showModal(); });
+      document.querySelector('[data-feedback-form]').addEventListener('submit', (event) => { event.preventDefault(); document.querySelector('[data-feedback-confirmation]').hidden = false; document.querySelector('[data-feedback-message]').value = ''; });
     </script>
   </body>
 </html>
