@@ -72,6 +72,7 @@ const alarmCount = devices.filter((device) => device.status === 'alarm').length;
             <h1 data-sidebar-project>Odden</h1>
             <p><MapPin size={14} /> <span data-sidebar-location>Nautholmveien 47, Stavanger</span></p>
           </div>
+          <div class="mobile-sheet-handle"><span>Enheter <b>{devices.length}</b></span><button class="icon-button" aria-label="Vis enhetsliste" title="Vis enhetsliste" aria-expanded="false" data-mobile-panel-toggle><ChevronDown size={18} /></button></div>
 
           <div class="sidebar-controls">
             <label class="search-field">
@@ -280,6 +281,25 @@ const alarmCount = devices.filter((device) => device.status === 'alarm').length;
       document.querySelector('[data-zimo-feedback]').addEventListener('click', () => { zimoMenu.hidden = true; zimoToggle.setAttribute('aria-expanded', 'false'); feedbackDialog.showModal(); });
       document.querySelector('[data-zimo-products]').addEventListener('click', () => { zimoMenu.hidden = true; zimoToggle.setAttribute('aria-expanded', 'false'); document.querySelector('[data-zimo-products-dialog]').showModal(); });
       document.querySelector('[data-feedback-form]').addEventListener('submit', (event) => { event.preventDefault(); document.querySelector('[data-feedback-confirmation]').hidden = false; document.querySelector('[data-feedback-message]').value = ''; });
+
+      const mobileSidebar = document.querySelector('.device-sidebar');
+      const mobilePanelToggle = document.querySelector('[data-mobile-panel-toggle]');
+      const mobileQuery = window.matchMedia('(max-width: 800px)');
+      const syncMobileSidebar = () => {
+        mobileSidebar.classList.toggle('mobile-collapsed', mobileQuery.matches);
+        mobilePanelToggle.setAttribute('aria-expanded', 'false');
+        mobilePanelToggle.setAttribute('aria-label', 'Vis enhetsliste');
+        window.setTimeout(() => map.invalidateSize(), 0);
+      };
+      syncMobileSidebar();
+      mobileQuery.addEventListener('change', syncMobileSidebar);
+      mobilePanelToggle.addEventListener('click', () => {
+        if (!mobileQuery.matches) return;
+        const isCollapsed = mobileSidebar.classList.toggle('mobile-collapsed');
+        mobilePanelToggle.setAttribute('aria-expanded', String(!isCollapsed));
+        mobilePanelToggle.setAttribute('aria-label', isCollapsed ? 'Vis enhetsliste' : 'Skjul enhetsliste');
+        window.setTimeout(() => map.invalidateSize(), 160);
+      });
     </script>
   </body>
 </html>
